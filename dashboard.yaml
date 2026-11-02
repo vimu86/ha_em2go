@@ -1,0 +1,61 @@
+title: EM2GO Wallbox
+views:
+  - title: Wallbox
+    path: wallbox
+    icon: mdi:ev-station
+    type: sections
+    sections:
+      - title: Charging
+        cards:
+          - type: glance
+            show_name: true
+            show_state: true
+            entities:
+              - entity: sensor.em2go_charger_status
+                name: Charger
+              - entity: sensor.em2go_cable_status
+                name: Cable
+              - entity: sensor.em2go_charger_error
+                name: Error
+          - type: tile
+            entity: sensor.em2go_active_power
+            name: Total power
+          - type: entities
+            title: Charging controls
+            show_header_toggle: false
+            entities:
+              - entity: select.em2go_charge_mode
+              - entity: select.em2go_number_of_charging_phases_setting
+              - entity: number.em2go_charging_current_limit
+              - entity: number.em2go_fallback_current_setting
+              - entity: button.em2go_start_charging
+              - entity: button.em2go_stop_charging
+
+      - title: Measurements
+        cards:
+          - type: entities
+            title: Phase measurements
+            show_header_toggle: false
+            entities:
+              - entity: sensor.em2go_charging_current_l1
+              - entity: sensor.em2go_charging_current_l2
+              - entity: sensor.em2go_charging_current_l3
+              - entity: sensor.em2go_active_power_l1
+              - entity: sensor.em2go_active_power_l2
+              - entity: sensor.em2go_active_power_l3
+              - entity: sensor.em2go_voltage_l1
+              - entity: sensor.em2go_voltage_l2
+              - entity: sensor.em2go_voltage_l3
+          - type: entities
+            title: Energy and diagnostics
+            show_header_toggle: false
+            entities:
+              - entity: sensor.em2go_meter_value
+              - entity: sensor.em2go_charging_energy
+              - entity: sensor.em2go_charging_duration
+              - entity: sensor.em2go_evse_maximum_current
+              - entity: sensor.em2go_evse_minimum_current
+              - entity: sensor.em2go_cable_maximum_current
+              - entity: sensor.em2go_number_of_charging_phases
+              - entity: number.em2go_modbus_communication_timeout_setting
+              - entity: sensor.em2go_serial_number_hex

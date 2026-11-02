@@ -1,0 +1,521 @@
+modbus:
+  - type: tcp
+    name: EM2GO_Home_CarCharger1
+    host: !secret em2go_wallbox_host
+    port: 502
+    delay: 5
+    timeout: 10
+    message_wait_milliseconds: 30
+
+    sensors:
+      - name: "EM2GO Active power"
+        address: 12
+        unit_of_measurement: W
+        state_class: measurement
+        device_class: power
+        input_type: holding
+        data_type: uint32
+        slave : 255
+        unique_id: em2go_active_power
+
+      - name: "EM2GO Charger state raw"
+        address: 0
+        input_type: holding
+        data_type: uint16
+        slave : 255
+        unique_id: em2go_charger_state_raw_2
+
+      - name: "EM2GO Cable state"
+        address: 2
+        input_type: holding
+        data_type: uint16
+        slave : 255
+        unique_id: em2go_cable_state
+        
+      - name: "EM2GO Error code raw"
+        address: 4
+        input_type: holding
+        data_type: uint16
+        slave : 255
+        unique_id: em2go_error_code_raw
+        
+      - name: "EM2GO Charging current L1"
+        address: 6
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave : 255
+        unique_id: em2go_charging_current_L1
+      - name: "EM2GO Charging current L2"
+        address: 8
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave: 255
+        unique_id: em2go_charging_current_L2
+      - name: "EM2GO Charging current L3"
+        address: 10
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave : 255
+        unique_id: em2go_charging_current_L3
+
+      # The register guide gives per-phase power examples directly in W. On the author's
+      # EMH011AC1RW, raw readings were about one tenth of the expected phase power, so
+      # scale: 10 is applied. This is empirically observed and may vary by firmware.
+      - name: "EM2GO Active power L1"
+        address: 16
+        unit_of_measurement: W
+        state_class: measurement
+        device_class: power
+        input_type: holding
+        data_type: uint32
+        scale: 10
+        slave : 255
+        unique_id: em2go_active_power_L1
+      - name: "EM2GO Active power L2"
+        address: 20
+        unit_of_measurement: W
+        state_class: measurement
+        device_class: power
+        input_type: holding
+        data_type: uint32
+        scale: 10
+        slave : 255
+        unique_id: em2go_active_power_L2
+      - name: "EM2GO Active power L3"
+        address: 24
+        unit_of_measurement: W
+        state_class: measurement
+        device_class: power
+        input_type: holding
+        data_type: uint32
+        scale: 10
+        slave : 255
+        unique_id: em2go_active_power_L3
+
+      - name: "EM2GO voltage L1"
+        address: 109
+        unit_of_measurement: V
+        state_class: measurement
+        device_class: voltage
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave : 255
+        unique_id: em2go_voltage_L1
+      - name: "EM2GO voltage L2"
+        address: 111
+        unit_of_measurement: V
+        state_class: measurement
+        device_class: voltage
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave : 255
+        unique_id: em2go_voltage_L2
+      - name: "EM2GO voltage L3"
+        address: 113
+        unit_of_measurement: V
+        state_class: measurement
+        device_class: voltage
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave : 255
+        unique_id: em2go_voltage_L3
+
+      - name: "EM2GO Meter value"
+        address: 28
+        unit_of_measurement: kWh
+        state_class: total_increasing
+        device_class: energy
+        input_type: holding
+        scale: 0.1
+        offset: 0
+        precision: 1
+        data_type: uint32
+        slave : 255
+        unique_id: em2go_meter_value
+
+      - name: "EM2GO Charging energy"
+        address: 72
+        unit_of_measurement: kWh
+        state_class: total_increasing
+        device_class: energy
+        input_type: holding
+        scale: 0.1
+        offset: 0
+        precision: 0.1
+        data_type: uint16
+        slave : 255
+        unique_id: em2go_chargin_energy
+
+      - name: "EM2GO Charging duration"
+        address: 78
+        unit_of_measurement: min
+        state_class: total_increasing
+        device_class: duration
+        input_type: holding
+        scale: 0.01667
+        offset: 0
+        precision: 1
+        data_type: uint32
+        slave : 255
+        unique_id: em2go_charging_duration
+
+      - name: "EM2GO EVSE maximum current"
+        address: 32
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave: 255
+        unique_id: em2go_evse_max_current
+
+      - name: "EM2GO EVSE minimum current"
+        address: 34
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave: 255
+        unique_id: em2go_evse_min_current
+
+      - name: "EM2GO Cable maximum current"
+        address: 36
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave: 255
+        unique_id: em2go_cable_max_current
+
+      # The guide labels registers 38-40 as a String, but observed values are not
+      # printable ASCII. Keep each word as UInt16 and combine them as four-digit hex below.
+      - name: "EM2GO Serial number register 38"
+        address: 38
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_serial_number_reg_38
+
+      - name: "EM2GO Serial number register 39"
+        address: 39
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_serial_number_reg_39
+
+      - name: "EM2GO Serial number register 40"
+        address: 40
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_serial_number_reg_40
+
+      - name: "EM2GO Fallback current"
+        address: 87
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave: 255
+        unique_id: em2go_fallback_current
+
+      - name: "EM2GO Modbus communication timeout"
+        address: 89
+        unit_of_measurement: s
+        device_class: duration
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_modbus_communication_timeout
+
+      - name: "EM2GO Current limit"
+        address: 91
+        unit_of_measurement: A
+        state_class: measurement
+        device_class: current
+        input_type: holding
+        data_type: uint16
+        scale: 0.1
+        slave: 255
+        unique_id: em2go_current_limit
+
+      - name: "EM2GO Charging command raw"
+        address: 95
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_charging_command_raw
+
+      - name: "EM2GO Number of charging phases"
+        address: 200
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_number_of_charging_phases
+
+      - name: "EM2GO Charge mode raw"
+        address: 93
+        input_type: holding
+        data_type: uint16
+        slave: 255
+        unique_id: em2go_charge_mode_raw
+    
+
+template:
+  - sensor:
+    - name: "EM2GO Charger Status"
+      state: >
+        {% set status = states('sensor.em2go_charger_state_raw') | int %}
+        {% if status == 0 %} Unknown
+        {% elif status == 1 %} Standby
+        {% elif status == 2 %} Connected
+        {% elif status == 3 %} Starting
+        {% elif status == 4 %} Charging
+        {% elif status == 5 %} Start failed
+        {% elif status == 6 %} Charging end
+        {% elif status == 7 %} EVSE system fail
+        {% elif status == 8 %} Transaction scheduled
+        {% elif status == 9 %} Firmware update
+        {% elif status == 10 %} Power on
+        {% else %} Invalid Status 
+        {% endif %}
+
+    - name: "EM2GO Charger Error"
+      state: >
+        {% set error = states('sensor.em2go_error_code_raw') | int %}
+        {% if error == 0 %} No Error
+        {% elif error == 11 %} CP Fault
+        {% elif error == 12 %} Emergency Stop Pressed
+        {% elif error == 13 %} Under Voltage
+        {% elif error == 14 %} Over Voltage
+        {% elif error == 15 %} Over Temperature
+        {% elif error == 16 %} Meter Fault
+        {% elif error == 17 %} Leakage Fault
+        {% elif error == 18 %} Output Short
+        {% elif error == 19 %} Over Current
+        {% elif error == 21 %} Vehicle Fault
+        {% elif error == 22 %} Vehicle Communication Timeout
+        {% elif error == 23 %} Relay Fault
+        {% elif error == 24 %} RCD Fault
+        {% elif error == 25 %} PE Fault
+        {% elif error == 26 %} Start-up Charging Fault
+        {% else %} Unknown Error Code
+        {% endif %}
+
+    - name: "EM2GO Cable Status"
+      state: >
+        {% set cablestatus = states('sensor.em2go_cable_state') | int %}
+        {% if cablestatus == 0 %} Disconnected
+        {% elif cablestatus == 1 %} Connected
+        {% else %} false
+        {% endif %}
+
+    - name: "EM2GO Serial number"
+      unique_id: em2go_serial_number_hex
+      availability: >-
+        {{ states('sensor.em2go_serial_number_register_38') | is_number
+           and states('sensor.em2go_serial_number_register_39') | is_number
+           and states('sensor.em2go_serial_number_register_40') | is_number }}
+      state: >-
+        {{ '%04X' | format(states('sensor.em2go_serial_number_register_38') | int) }}{{ '%04X' | format(states('sensor.em2go_serial_number_register_39') | int) }}{{ '%04X' | format(states('sensor.em2go_serial_number_register_40') | int) }}
+
+  # Register 87/91 current values are encoded in 0.1 A units. The app-configured
+  # maximum current is a separate ceiling: raise it in the EM2GO app before expecting
+  # Modbus to charge above that ceiling (observed on one EMH011AC1RW).
+  - number:
+      - name: "EM2GO Fallback current setting"
+        unique_id: em2go_fallback_current_setting
+        unit_of_measurement: A
+        min: "{{ states('sensor.em2go_evse_minimum_current') | float(6) }}"
+        max: >-
+          {{ [states('sensor.em2go_evse_maximum_current') | float(16),
+              states('sensor.em2go_cable_maximum_current') | float(16)] | min }}
+        step: 0.1
+        availability: "{{ states('sensor.em2go_fallback_current') | is_number }}"
+        state: "{{ states('sensor.em2go_fallback_current') }}"
+        set_value:
+          # A list value selects Modbus function code 16, as required by the wallbox guide.
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 87
+              value:
+                - "{{ (value | float * 10) | round(0) | int }}"
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_fallback_current
+
+      - name: "EM2GO Modbus communication timeout setting"
+        unique_id: em2go_modbus_communication_timeout_setting
+        unit_of_measurement: s
+        min: 1
+        max: 65535
+        step: 1
+        availability: "{{ states('sensor.em2go_modbus_communication_timeout') | is_number }}"
+        state: "{{ states('sensor.em2go_modbus_communication_timeout') }}"
+        set_value:
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 89
+              value:
+                - "{{ value | int }}"
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_modbus_communication_timeout
+
+      - name: "EM2GO Charging current limit"
+        unique_id: em2go_charging_current_limit_setting
+        unit_of_measurement: A
+        min: "{{ states('sensor.em2go_evse_minimum_current') | float(6) }}"
+        max: >-
+          {{ [states('sensor.em2go_evse_maximum_current') | float(16),
+              states('sensor.em2go_cable_maximum_current') | float(16)] | min }}
+        step: 0.1
+        availability: "{{ states('sensor.em2go_current_limit') | is_number }}"
+        state: "{{ states('sensor.em2go_current_limit') }}"
+        set_value:
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 91
+              value:
+                - "{{ (value | float * 10) | round(0) | int }}"
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_current_limit
+
+  - select:
+      - name: "EM2GO Charge mode"
+        unique_id: em2go_charge_mode
+        variables:
+          map:
+            "Plug & charge": 0
+            "Charge on command / RFID": 1
+          fallback: "Plug & charge"
+        options: "{{ map.keys() | list }}"
+        availability: "{{ states('sensor.em2go_charge_mode_raw') | is_number }}"
+        state: >-
+          {% set raw = states('sensor.em2go_charge_mode_raw') | int %}
+          {% set ns = namespace(result=fallback) %}
+          {% for label, value in map.items() %}
+            {% if value == raw %}
+              {% set ns.result = label %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.result }}
+        select_option:
+          # Keep writes as lists to use function code 16 rather than function code 06.
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 93
+              value:
+                - "{{ map.get(option, 0) | int }}"
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_charge_mode_raw
+
+      - name: "EM2GO Number of charging phases setting"
+        unique_id: em2go_charging_phases_setting
+        variables:
+          map:
+            "1 phase": 1
+            "3 phases": 3
+          fallback: "3 phases"
+        options: "{{ map.keys() | list }}"
+        availability: "{{ states('sensor.em2go_number_of_charging_phases') | is_number }}"
+        state: >-
+          {% set raw = states('sensor.em2go_number_of_charging_phases') | int %}
+          {% set ns = namespace(result=fallback) %}
+          {% for label, value in map.items() %}
+            {% if value == raw %}
+              {% set ns.result = label %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.result }}
+        select_option:
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 200
+              value:
+                - "{{ map.get(option, 3) | int }}"
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_number_of_charging_phases
+
+  - button:
+      - name: "EM2GO Start charging"
+        unique_id: em2go_start_charging
+        press:
+          - condition: state
+            entity_id: select.em2go_charge_mode
+            state: "Charge on command / RFID"
+          # The command register is writable only in command/RFID mode; list form uses FC16.
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 95
+              value: [1]
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_charger_state_raw
+
+      - name: "EM2GO Stop charging"
+        unique_id: em2go_stop_charging
+        press:
+          - condition: state
+            entity_id: select.em2go_charge_mode
+            state: "Charge on command / RFID"
+          - action: modbus.write_register
+            data:
+              hub: EM2GO_Home_CarCharger1
+              slave: 255
+              address: 95
+              value: [2]
+          - delay:
+              milliseconds: 100
+          - action: homeassistant.update_entity
+            target:
+              entity_id: sensor.em2go_charger_state_raw

@@ -173,7 +173,8 @@ modbus:
         data_type: uint32
         slave : 255
         unique_id: em2go_charging_duration
-
+        
+      # EVSE = Electric Vehicle Supply Equipment
       - name: "EM2GO EVSE maximum current"
         address: 32
         unit_of_measurement: A
